@@ -65,7 +65,7 @@ def main():
 	dataFiles = ["USA_CA_Bakersfield.723840_TMY2.csv"]
 
 	for dataFile in dataFiles:
-		processDataFile(dataFile = dataFile)
+		processDataFile(dataFile = "data/"+dataFile)
 
 	# dirName = "EPLUS_TMY2_RESIDENTIAL_BASE"
 
