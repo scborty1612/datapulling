@@ -6,9 +6,9 @@ will be added there.
 """
 import pandas as pd
 
-# import matplotlib.pyplot as plt
-# import seaborn as sns
-# sns.set_style("darkgrid")
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set_style("darkgrid")
 
 import numpy as np
 import os
@@ -19,6 +19,10 @@ def processDataFile(dataFile = None):
 	"""
 	df = pd.read_csv(dataFile, parse_dates = ['Date/Time'], index_col='Date/Time')
 	dataLen = 500
+
+	# Check the columns name
+	print df.columns.values
+
 
 	_, ax = plt.subplots(figsize=[10, 5])
 	# df['Electricity:Facility [kWh](Hourly)'][:dataLen].plot()
@@ -33,36 +37,44 @@ def directoryWalker(dirName = None):
 	"""
 	dataFiles = []
 
-	for fileName in os.listdir(dirName):
+	try:
+		for fileName in os.listdir(dirName):
 
-		# Check whether its a csv file
-		if not fileName.endswith(".csv"):
-			continue
+			# Check whether its a csv file
+			if not fileName.endswith(".csv"):
+				continue
 
-		file_info = fileName.split("_")
-		state = file_info[1]
-		res_info = file_info[2].split(".")
-		location = "-".join([str(v) for v in res_info[:-2]])
+			file_info = fileName.split("_")
+			state = file_info[1]
+			res_info = file_info[2].split(".")
+			location = "-".join([str(v) for v in res_info[:-2]])
 
-		dataFiles.append({'state': state, 'location': location, 'data': dirName+fileName})
+			dataFiles.append({'state': state, 'location': location, 'data': dirName+fileName})
 
-	df = pd.DataFrame(data = dataFiles)
-
+		df = pd.DataFrame(data = dataFiles)
+	except Exception as e:
+		print "Directory is not valid"
+		print e
+		return None
+	
 	return df
 
 
 def main():
 
-	# dataFiles = ["EPLUS_TMY2_RESIDENTIAL_BASE/USA_WY_Sheridan.726660_TMY2.csv"]
+	dataFiles = ["USA_CA_Bakersfield.723840_TMY2.csv"]
 
-	# for dataFile in dataFiles:
-	# 	processDataFile(dataFile = dataFile)
+	for dataFile in dataFiles:
+		processDataFile(dataFile = dataFile)
 
-	dirName = "EPLUS_TMY2_RESIDENTIAL_BASE"
+	# dirName = "EPLUS_TMY2_RESIDENTIAL_BASE"
 
-	df = directoryWalker(dirName=dirName)
+	# df = directoryWalker(dirName=dirName)
 
-	print df[df['state']=='CA'][:2]
+	# if df is not None:
+	# 	print df[df['state']=='CA'][:2]
+	# else:
+	# 	print "None"
 
 if __name__ == "__main__":
 	main()
